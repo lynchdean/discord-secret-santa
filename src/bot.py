@@ -1,9 +1,8 @@
 import discord
 from discord.ext import commands
 
-from Entry import Entry
-import embeds
-import secrets
+from src.Entry import Entry
+from src import embeds, secrets
 
 intents = discord.Intents.default()
 intents.members = True
