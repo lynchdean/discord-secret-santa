@@ -2,6 +2,14 @@ import discord
 
 nl = "\n"
 
+
+def msg(title):
+    return discord.Embed(
+        title=title,
+        colour=discord.Colour.blue(),
+    )
+
+
 join = discord.Embed(
     title="Joined!",
     colour=discord.Colour.green(),

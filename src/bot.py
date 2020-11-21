@@ -130,19 +130,19 @@ async def my_exclusions(ctx):
 
 @bot.command(pass_context=True)
 async def draw(ctx):
-    # Check if theres enough people in the draw
+    # # Check if theres enough people in the draw
     # if len(participants.keys()) < 3:
-    #     await ctx.send("Not enough entries.")
+    #     await ctx.send(embed=embeds.msg("Not enough entries."))
     #     return
-
-    # Check if everyone has fully confirmed their entry
+    #
+    # # Check if everyone has fully confirmed their entry
     # incomplete = []
     # for user in participants:
     #     if not participants[user].is_complete():
     #         incomplete.append(str(user))
-
+    #
     # if incomplete:
-    #     await ctx.send("Not all users have completed their entry.")
+    #     await ctx.send(embed=embeds.msg("Not all users have completed their entry."))
     #     return
 
     entries = list(participants.values())
@@ -150,6 +150,14 @@ async def draw(ctx):
     await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
     await run_draw(entries)
     await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
+
+    for i in range(len(entries)):
+        if i == len(entries) - 1:
+            await ctx.guild.get_member(entries[i].id).send(entries[0])
+            await ctx.send(f"{entries[i]} -> {entries[0]}")
+        else:
+            await ctx.guild.get_member(entries[i]).send(entries[i + 1])
+            await ctx.send(f"{entries[i]} -> {entries[i + 1]}")
 
 
 bot.run(secrets.token)
