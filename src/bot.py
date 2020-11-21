@@ -29,7 +29,7 @@ async def join(ctx):
         embed = embeds.join
         await author.send(embed=embed)
     else:
-        embed = embeds.already_joined
+        embed = embeds.msg("You've already joined the Kris Kindle.")
         await author.send(embed=embed)
 
 
@@ -65,11 +65,11 @@ async def addr_error(ctx, _):
 
 
 # This confirms that the user is happy with their entered address and is ready to move to the next step
-@bot.command(name='confirm-addr', pass_context=True)
-async def confirm_addr(ctx):
+@bot.command(name='confirm', pass_context=True)
+async def confirm(ctx):
     if ctx.author in participants.keys():
         if participants[ctx.author].address is not None:
-            participants[ctx.author].confirm_addr()
+            participants[ctx.author].confirm()
             await ctx.author.send(embed=embeds.confirm_addr)
         else:
             await ctx.author.send(embed=embeds.no_address)
@@ -87,11 +87,11 @@ async def exclude(ctx, *, arg):
             for user in participants.keys():
                 if user.id == exclude_id:
                     entry.add_exclusion(exclude_id)
-                    await ctx.send(embed=embeds.user_excluded(str(user)))
+                    await ctx.send(embed=embeds.msg(f"{user} successfully added to your exclusions!"))
                     return
             await ctx.send(embed=embeds.user_not_found)
         else:
-            await ctx.send(embed=embeds.self_exclude)
+            await ctx.send(embed=embeds.msg("You can't exclude yourself..."))
     else:
         await ctx.send(embed=embeds.not_joined)
 
@@ -123,7 +123,7 @@ async def my_exclusions(ctx):
         if names:
             await ctx.send(embed=embeds.user_exclusions(names))
         else:
-            await ctx.send(embed=embeds.no_exclusions)
+            await ctx.send(embed=embeds.msg("You have no exclusions."))
     else:
         await ctx.send(embed=embeds.not_joined)
 
@@ -142,24 +142,23 @@ async def draw(ctx):
     # Check if everyone has fully confirmed their address
     unconfirmed = []
     for user in participants:
-        if not participants[user].confirmed_addr:
+        if not participants[user].confirmed:
             unconfirmed.append(str(user))
 
     if unconfirmed:
         await ctx.send(embed=embeds.msg("Not all entrants have confirmed their address."))
         return
 
-    # Run the draw and send the results to everybody's dm's
+    # Run the draw and send the results to everybody's DMs
     entries = list(participants.values())
     await run_draw(entries)
-
     for i in range(len(entries)):
         sender = ctx.guild.get_member(entries[i].id)
         recip_idx = 0 if (i == len(entries) - 1) else (i + 1)
         recip_entry = entries[recip_idx]
         recipient = ctx.guild.get_member(recip_entry.id)
         await sender.send(embed=embeds.result(recipient.name, recip_entry.address))
-        await ctx.send()
 
+    await ctx.send(embed=embeds.msg("Draw complete! Check your DMs to see who you got."))
 
 bot.run(secrets.token)

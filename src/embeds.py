@@ -26,12 +26,6 @@ join = discord.Embed(
     inline=False
 )
 
-already_joined = discord.Embed(
-    title="Already joined",
-    colour=discord.Colour.red(),
-    description=f"You've already joined the Kris Kindle."
-)
-
 not_joined = discord.Embed(
     title="You haven't joined the Kris Kindle!",
     colour=discord.Colour.red(),
@@ -49,7 +43,7 @@ def address(addr):
         name="Is this correct?",
         value="If not, use the `!addr` command again with the correct details to overwrite the above \n"
               "\n"
-              "If you are happy with your address, type `!confirm-addr`",
+              "If you are happy with your address, type `!confirm`",
         inline=False
     )
 
@@ -80,32 +74,11 @@ confirm_addr = discord.Embed(
     inline=False
 )
 
-
-def user_excluded(user):
-    return discord.Embed(
-        title=f"{user} successfully added to your exclusions!",
-        colour=discord.Colour.green(),
-    )
-
-
 addr_not_confirmed = discord.Embed(
     title="You haven't confirmed your address!",
     description="Please confirm your address before adding exclusions.",
     colour=discord.Colour.red()
 )
-
-self_exclude = discord.Embed(
-    title="You can't exclude yourself...",
-    colour=discord.Colour.red(),
-)
-
-
-def user_removed(user):
-    return discord.Embed(
-        title=f"{user} successfully removed from your exclusions!",
-        colour=discord.Colour.green()
-    )
-
 
 user_not_found = discord.Embed(
     title="User not found.",
@@ -120,12 +93,6 @@ def user_exclusions(users):
         description=f"```{nl.join(users)}```",
         colour=discord.Colour.blue()
     )
-
-
-no_exclusions = discord.Embed(
-    title="You have no exclusions.",
-    colour=discord.Colour.blue()
-)
 
 
 def result(name, addr):
