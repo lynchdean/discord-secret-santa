@@ -1,10 +1,9 @@
-import random
-
 import discord
 from discord.ext import commands
 
 from src import embeds, secrets
 from src.Entry import Entry
+from src.draw_async import run_draw
 
 intents = discord.Intents.default()
 intents.members = True
@@ -97,6 +96,7 @@ async def exclude(ctx, *, arg):
         await ctx.send(embed=embeds.not_joined)
 
 
+# Undo exclude from a users draw
 @bot.command(pass_context=True)
 async def unexclude(ctx, *, arg):
     if ctx.author in participants.keys():
@@ -111,6 +111,7 @@ async def unexclude(ctx, *, arg):
         await ctx.send(embed=embeds.not_joined)
 
 
+# Lists all of a users exclusions
 @bot.command(name='my-exclusions', pass_context=True)
 async def my_exclusions(ctx):
     if ctx.author in participants.keys():
@@ -135,17 +136,20 @@ async def draw(ctx):
     #     return
 
     # Check if everyone has fully confirmed their entry
-    incomplete = []
-    for user in participants:
-        if not participants[user].is_complete():
-            incomplete.append(str(user))
+    # incomplete = []
+    # for user in participants:
+    #     if not participants[user].is_complete():
+    #         incomplete.append(str(user))
 
-    if incomplete:
-        await ctx.send("Not all users have completed their entry.")
-        return
+    # if incomplete:
+    #     await ctx.send("Not all users have completed their entry.")
+    #     return
 
-    results = draw(participants)
-    print(results)
+    entries = list(participants.values())
+
+    await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
+    await run_draw(entries)
+    await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
 
 
 bot.run(secrets.token)

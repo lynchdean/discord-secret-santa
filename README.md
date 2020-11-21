@@ -6,3 +6,4 @@
 - Command to list all exclusions
 - !join prompt on server join
 - kick function
+- help command with list of functions
