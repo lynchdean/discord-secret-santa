@@ -3,7 +3,6 @@ class Entry:
         self.id = id
         self.address = None
         self.confirmed_addr = False
-        self.confirmed_all = False
         self.exclusions = []
 
     def set_addr(self, address):
@@ -14,9 +13,3 @@ class Entry:
 
     def confirm_addr(self):
         self.confirmed_addr = True
-
-    def confirm_all(self):
-        self.confirmed_all = True
-
-    def is_complete(self):
-        return self.confirmed_all

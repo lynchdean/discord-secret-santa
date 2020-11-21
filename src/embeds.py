@@ -70,7 +70,8 @@ confirm_addr = discord.Embed(
     colour=discord.Colour.green()
 ).add_field(
     name="Do you have anyone you need to exclude from drawing?",
-    value="If so, type `!exclude`, a space, then type `@` and select the user you want to exclude. "
+    value="If so, ***in the Kris Kindle server (not here)***, "
+          "type `!exclude`, a space, then type `@` and select the user you want to exclude. "
           "***Do not manually type out the users name.***",
     inline=False,
 ).add_field(
@@ -125,3 +126,14 @@ no_exclusions = discord.Embed(
     title="You have no exclusions.",
     colour=discord.Colour.blue()
 )
+
+
+def result(name, addr):
+    f_addr = ",\n".join(addr.split(", "))
+    return discord.Embed(
+        title=f"You have drawn {name}!",
+        colour=discord.Colour.green()
+    ).add_field(
+        name="Their address:",
+        value=f"```{f_addr}```"
+    )

@@ -128,36 +128,38 @@ async def my_exclusions(ctx):
         await ctx.send(embed=embeds.not_joined)
 
 
+# # Lists all of a users exclusions
+# @bot.command(name='all-exclusions', pass_context=True)
+# async def all_exclusions(ctx):
+
 @bot.command(pass_context=True)
 async def draw(ctx):
-    # # Check if theres enough people in the draw
-    # if len(participants.keys()) < 3:
-    #     await ctx.send(embed=embeds.msg("Not enough entries."))
-    #     return
-    #
-    # # Check if everyone has fully confirmed their entry
-    # incomplete = []
-    # for user in participants:
-    #     if not participants[user].is_complete():
-    #         incomplete.append(str(user))
-    #
-    # if incomplete:
-    #     await ctx.send(embed=embeds.msg("Not all users have completed their entry."))
-    #     return
+    # Check if theres enough people in the draw
+    if len(participants.keys()) < 2:
+        await ctx.send(embed=embeds.msg("Not enough entries."))
+        return
 
+    # Check if everyone has fully confirmed their address
+    unconfirmed = []
+    for user in participants:
+        if not participants[user].confirmed_addr:
+            unconfirmed.append(str(user))
+
+    if unconfirmed:
+        await ctx.send(embed=embeds.msg("Not all entrants have confirmed their address."))
+        return
+
+    # Run the draw and send the results to everybody's dm's
     entries = list(participants.values())
-
-    await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
     await run_draw(entries)
-    await ctx.send([ctx.guild.get_member(x.id).name for x in entries])
 
     for i in range(len(entries)):
-        if i == len(entries) - 1:
-            await ctx.guild.get_member(entries[i].id).send(entries[0])
-            await ctx.send(f"{entries[i]} -> {entries[0]}")
-        else:
-            await ctx.guild.get_member(entries[i]).send(entries[i + 1])
-            await ctx.send(f"{entries[i]} -> {entries[i + 1]}")
+        sender = ctx.guild.get_member(entries[i].id)
+        recip_idx = 0 if (i == len(entries) - 1) else (i + 1)
+        recip_entry = entries[recip_idx]
+        recipient = ctx.guild.get_member(recip_entry.id)
+        await sender.send(embed=embeds.result(recipient.name, recip_entry.address))
+        await ctx.send()
 
 
 bot.run(secrets.token)
