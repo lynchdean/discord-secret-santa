@@ -1,7 +1,9 @@
 class Entry:
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         self.address = None
-        self.confirmed = False
+        self.confirmed_addr = False
+        self.confirmed_all = False
         self.exclusions = []
 
     def set_addr(self, address):
@@ -10,5 +12,11 @@ class Entry:
     def add_exclusion(self, user):
         self.exclusions.append(user)
 
-    def is_confirmed(self):
-        return self.confirmed
+    def confirm_addr(self):
+        self.confirmed_addr = True
+
+    def confirm_all(self):
+        self.confirmed_all = True
+
+    def is_complete(self):
+        return self.confirmed_all
