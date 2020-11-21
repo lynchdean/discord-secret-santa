@@ -64,15 +64,18 @@ confirm_addr = discord.Embed(
     colour=discord.Colour.green()
 ).add_field(
     name="Do you have anyone you need to exclude from drawing?",
-    value="If so, ***in the Kris Kindle server (not here)***, "
-          "type `!exclude`, a space, then type `@` and select the user you want to exclude. "
-          "***Do not manually type out the users name.***",
-    inline=False,
-).add_field(
-    name="Example:",
-    value="`!exclude @Kris#1234` - where \"@Kris#1234\" should be highlighted in purple.",
-    inline=False
+    value="If so, please go back to the main Kris Kindle server and type !exclude for more info."
 )
+
+#     value="If so, ***in the Kris Kindle server (not here)***, "
+#           "type `!exclude`, a space, then type `@` and select the user you want to exclude. "
+#           "***Do not manually type out the users name.***",
+#     inline=False,
+# ).add_field(
+#     name="Example:",
+#     value="`!exclude @Kris#1234` - where \"@Kris#1234\" should be highlighted in purple.",
+#     inline=False
+# )
 
 addr_not_confirmed = discord.Embed(
     title="You haven't confirmed your address!",
