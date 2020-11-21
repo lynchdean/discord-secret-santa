@@ -26,23 +26,22 @@ async def join(ctx):
     author = ctx.author
     if author not in participants:
         participants[author] = Entry(author.id)
-        embed = embeds.join
-        await author.send(embed=embed)
+        await ctx.send(embed=embeds.msg("Joined! Check your DMs for more info on how to add your address."))
+        await author.send(embed=embeds.join)
     else:
-        embed = embeds.msg("You've already joined the Kris Kindle.")
-        await author.send(embed=embed)
+        await author.send(embed=embeds.msg("You've already joined the Kris Kindle."))
 
 
 # Print a list of every user that has successfully joined
 @bot.command(pass_context=True)
 async def joined(ctx):
     if participants:
-        msgs = ["Participants:"]
+        output = []
         for user in participants.keys():
-            msgs.append(f"\u2022 {str(user)}")
-        await ctx.send("\n".join(msgs))
+            output.append(str(user))
+        await ctx.send(embed=embeds.list_users("Joined:", output))
     else:
-        await ctx.send("Nobody has joined yet")
+        await ctx.send(embed=embeds.msg("Nobody has joined yet."))
 
 
 # Add an address to your entry
@@ -59,9 +58,9 @@ async def addr(ctx, *, arg):
 @addr.error
 async def addr_error(ctx, _):
     if ctx.author in participants.keys():
-        await ctx.author.send(embed=embeds.no_address)
+        await ctx.send(embed=embeds.no_address)
     else:
-        await ctx.author.send(embed=embeds.not_joined)
+        await ctx.send(embed=embeds.not_joined)
 
 
 # This confirms that the user is happy with their entered address and is ready to move to the next step
@@ -96,6 +95,15 @@ async def exclude(ctx, *, arg):
         await ctx.send(embed=embeds.not_joined)
 
 
+# Catch error if no argument is passed to exclude(), and provide info on the command
+@exclude.error
+async def exclude_error(ctx, _):
+    if ctx.author in participants.keys():
+        await ctx.send(embed=embeds.exclude_info)
+    else:
+        await ctx.send(embed=embeds.not_joined)
+
+
 # Undo exclude from a users draw
 @bot.command(pass_context=True)
 async def unexclude(ctx, *, arg):
@@ -104,7 +112,8 @@ async def unexclude(ctx, *, arg):
         exclude_id = int(arg.strip().replace('<@!', '').replace('>', ''))
         if exclude_id in exclusions:
             exclusions.remove(exclude_id)
-            await ctx.send(embed=embeds.user_removed(ctx.guild.get_member(exclude_id)))
+            member = ctx.guild.get_member(exclude_id)
+            await ctx.send(embed=embeds.msg(f"{member} successfully removed from your exclusions."))
         else:
             await ctx.send(embed=embeds.user_not_found)
     else:
@@ -121,16 +130,27 @@ async def my_exclusions(ctx):
             member = ctx.guild.get_member(id)
             names.append(str(member))
         if names:
-            await ctx.send(embed=embeds.user_exclusions(names))
+            await ctx.send(embed=embeds.list_users("Your exclusions:", names))
         else:
             await ctx.send(embed=embeds.msg("You have no exclusions."))
     else:
         await ctx.send(embed=embeds.not_joined)
 
 
-# # Lists all of a users exclusions
-# @bot.command(name='all-exclusions', pass_context=True)
-# async def all_exclusions(ctx):
+# Lists all of a users exclusions
+@bot.command(name='all-exclusions', pass_context=True)
+async def all_exclusions(ctx):
+    output = []
+    for user in participants.keys():
+        excls = participants[user].exclusions
+        if excls:
+            excls_str = str([str(ctx.guild.get_member(id)) for id in excls]).strip("[").strip("]")
+            output.append(f"{str(user)} -> {excls_str}")
+    if output:
+        await ctx.send(embed=embeds.list_users("All exclusions:", output))
+    else:
+        await ctx.send(embed=embeds.msg("There are currently no exclusions."))
+
 
 @bot.command(pass_context=True)
 async def draw(ctx):

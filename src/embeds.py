@@ -64,18 +64,8 @@ confirm_addr = discord.Embed(
     colour=discord.Colour.green()
 ).add_field(
     name="Do you have anyone you need to exclude from drawing?",
-    value="If so, please go back to the main Kris Kindle server and type !exclude for more info."
+    value="If so, please go back to the main Kris Kindle server and type `!exclude` for more info."
 )
-
-#     value="If so, ***in the Kris Kindle server (not here)***, "
-#           "type `!exclude`, a space, then type `@` and select the user you want to exclude. "
-#           "***Do not manually type out the users name.***",
-#     inline=False,
-# ).add_field(
-#     name="Example:",
-#     value="`!exclude @Kris#1234` - where \"@Kris#1234\" should be highlighted in purple.",
-#     inline=False
-# )
 
 addr_not_confirmed = discord.Embed(
     title="You haven't confirmed your address!",
@@ -89,11 +79,24 @@ user_not_found = discord.Embed(
     colour=discord.Colour.red()
 )
 
+exclude_info = discord.Embed(
+    title="How to add an exclusion:",
+    description="Type `!exclude`, a space, then type `@` and select the user you want to exclude from the menu "
+                "that appears.\n"
+                "***Do not manually type out the users name.***",
+    colour=discord.Colour.blue()
+).add_field(
+    name="Example:",
+    value="`!exclude @Kris#1234` - where \"@Kris#1234\" should be highlighted in purple.\n"
+          "***Note:*** To remove somebody you have excluded, use !unexclude in place of !exclude",
+    inline=False
+)
 
-def user_exclusions(users):
+
+def list_users(title, output):
     return discord.Embed(
-        title="Your exclusions:",
-        description=f"```{nl.join(users)}```",
+        title=title,
+        description=f"```{nl.join(output)}```",
         colour=discord.Colour.blue()
     )
 
